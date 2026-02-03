@@ -1,4 +1,4 @@
-# GODOT-Third-Person-Character-Utility-Mixamo-Manequin-Women
+# Godot-Third-Person-Character-Utility-Mixamo-Manequin-Women
 
 This utility consists of a ready to used third-person character with movement, camera and animations
 
