@@ -18,9 +18,10 @@ A detailed explanation of how the demo works is available on the itch.io page in
 
 Feel free to check it out in either of its two versions, Windows or Linux.
 
+The code for this demo is available at : [Third Person Character Demo](https://github.com/chemacarceller/Godot-Third-Person-Character-Demo) 
+
 ==============================================================================
 
-1.068 / 5.000
 Esta utilidad consiste en un personaje en tercera persona listo para usar con movimiento, cámara y animaciones.
 
 Esta utilidad utiliza el componente básico de movimiento del personaje y el componente de control de cámara.
@@ -38,3 +39,5 @@ También permite cambiar de personaje y ver el consumo de recursos mediante un p
 Puedes encontrar una explicación detallada del funcionamiento de la demo en la página de itch.io indicada.
 
 No dudes en probarlo en cualquiera de sus dos versiones, Windows o Linux.
+
+El código de esta demo lo tienes disponible en : [Third Person Character Demo](https://github.com/chemacarceller/Godot-Third-Person-Character-Demo)
