@@ -99,8 +99,8 @@ func _on_timer_timeout():
 # Adjusting the weapon shape, the weapon shape position and rotation must be translated to the weapon shape included in the character global shape
 func _on_timer_timeout2() -> void:
 	if _isArmed and isEnabled and get_bone().get_children().size() >0 :
-		get_weaponHull().global_position = get_bone().get_children()[0].get_node("WeaponHull").global_position
-		get_weaponHull().global_rotation = get_bone().get_children()[0].get_node("WeaponHull").global_rotation
+		get_weaponHull().global_position = get_bone().get_children()[0].get_collisionShape().global_position
+		get_weaponHull().global_rotation = get_bone().get_children()[0].get_collisionShape().global_rotation
 
 
 # PUBLIC API of this Character Getter and setters methods
