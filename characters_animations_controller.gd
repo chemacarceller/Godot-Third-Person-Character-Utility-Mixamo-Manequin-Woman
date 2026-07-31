@@ -8,6 +8,7 @@ class_name  CharactersAnimationsController extends AnimationTree
 @onready var state_machine := get("parameters/playback") as AnimationNodeStateMachinePlayback
 var prev_node : StringName = ""
 var prev_direction : int = -1
+var playback : AnimationNodeStateMachinePlayback = null
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -41,8 +42,11 @@ func _on_character_movement_component_directionModeChanged(data: int) -> void :
 		movementComponent.BACKWARD:
 			EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed, ["", "Backward"])
 
+	get_parent()._positioning_weaponHull()
+
 # Changing the direction of the movement compoment
 func _on_character_movement_component_movementStateChanged(data: int) -> void :
+	
 	var movementComponent = get_parent().get_movementComponent()
 	var isArmed = get_parent().get_isArmed()
 
@@ -86,3 +90,7 @@ func _on_character_movement_component_movementStateChanged(data: int) -> void :
 	if get("parameters/conditions/jump") != is_jumping : 
 		set("parameters/conditions/jump", is_jumping)
 		if is_jumping : EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed,["Jumping",""])
+	
+	# Waiting for animation to finish
+	await get_tree().create_timer(0.25).timeout
+	get_parent()._positioning_weaponHull()
