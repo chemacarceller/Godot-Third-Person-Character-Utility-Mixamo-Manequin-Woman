@@ -1,24 +1,16 @@
+# Base script for all characters of this demo applied to the AnimationTree
 class_name  CharactersAnimationsController extends AnimationTree
-
-# Indicating during how many frames must be detected the fall movement happens continuosly 
-# until the animation takes place. To avoid short animations changes
-@export_range(1,30) var FALLING_FRAMES_DETECTION : int = 5
-
-# We get the state machine of the AnimationTree
-@onready var state_machine := get("parameters/playback") as AnimationNodeStateMachinePlayback
-var prev_node : StringName = ""
-var prev_direction : int = -1
-var playback : AnimationNodeStateMachinePlayback = null
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		MyLogger.info("Saliendo del animation controller",'animations_controller.gd',17, true)
+		MyLogger.info("Exiting the animation controller",'animations_controller.gd',6, true)
 
-func _ready() -> void :  MyLogger.info(" AnimationController Ready " + name + " ...", 'animations_controller.gd', 19, true)
+func _ready() -> void :  MyLogger.info(" AnimationController Ready " + name + " ...", 'animations_controller.gd', 8, true)
 
-func _enter_tree() -> void : MyLogger.info(" AnimationController instantiated " + name + " ...", 'animations_controller.gd', 21, true)
+func _enter_tree() -> void : MyLogger.info(" AnimationController instantiated " + name + " ...", 'animations_controller.gd', 10, true)
 
-# Changing the direction of the movement compoment
+
+# Changing the direction of the movement compoment called by the movement component
 func _on_character_movement_component_directionModeChanged(data: int) -> void :
 	
 	var movementComponent = get_parent().get_movementComponent()
@@ -42,9 +34,11 @@ func _on_character_movement_component_directionModeChanged(data: int) -> void :
 		movementComponent.BACKWARD:
 			EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed, ["", "Backward"])
 
+	# The weapon hull on the character hierarchy must correspond to the weapon's collisionHull
+	# A weakness of Godot is that if you attach an object with a collision hull, it isn't automatically added to the character's collision hull; you have to add it manually.
 	get_parent()._positioning_weaponHull()
 
-# Changing the direction of the movement compoment
+# Changing the direction of the movement compoment called by the movement component
 func _on_character_movement_component_movementStateChanged(data: int) -> void :
 	
 	var movementComponent = get_parent().get_movementComponent()
@@ -93,4 +87,7 @@ func _on_character_movement_component_movementStateChanged(data: int) -> void :
 	
 	# Waiting for animation to finish
 	await get_tree().create_timer(0.25).timeout
+
+	# The weapon hull on the character hierarchy must correspond to the weapon's collisionHull
+	# A weakness of Godot is that if you attach an object with a collision hull, it isn't automatically added to the character's collision hull; you have to add it manually.
 	get_parent()._positioning_weaponHull()

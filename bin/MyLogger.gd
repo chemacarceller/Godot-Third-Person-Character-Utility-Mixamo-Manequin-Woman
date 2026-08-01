@@ -1,16 +1,12 @@
+# Static Class that acts as a bypass to the C++ LogFileWriter class exported as a singleton MyLogger object
+# LogFileWriter is created as a singleton onject directly in C++
+# This is implemented to prevent errors when rebuilding the project in Godot without .godot folder
 extends Node
 class_name MyLogger
-# NOTE: The line "class_name MyLogger" was intentionally removed.
-# Add the autoloads directly to the project.godot file, section [autoload]
 
-# Class that acts as a bypass to the C++ LogFileWriter class, MyLogger object
-
-# This is implemented to prevent errors when rebuilding the project in Godot because the class
-# LogFileWriter is created as a singleton directly in C++
 
 # --- ANALYZER SHIELD (EDIT TIME) ---
-# Since they are not static functions, the engine compiles them as normal object methods,
-# allowing the call to .free() to be perfectly legal for the parser.
+# Static functions corresponding to the public functions of the C++ LogFileWriter class
 static func debug(a=null, b=null, c=null, d=null) -> void : _route_call("debug", [a, b, c, d])
 static func info(a=null, b=null, c=null, d=null) -> void : _route_call("info", [a, b, c, d])
 static func error(a=null, b=null, c=null, d=null) -> void : _route_call("error", [a, b, c, d])
@@ -23,8 +19,10 @@ static func set_min_level(a=null) -> void : _route_call("set_min_level", [a])
 static func get_singleton() -> void : _route_call("get_singleton", [])	
 
 # --- SELF-DESTRUCT INTERCEPTOR ---
-# If GameInstance calls MyLogger.free(), this function will be executed natively.
-# We prevent the GDScript node from being deleted if C++ has not claimed the Singleton.
+# Function to release the MyLogger object
+# Function not required; a static class is a resource that releases itself.
+# and the singleton object exported from the C++ LogFileWriter class automatically frees itself, as programmed within the module itself
+# You cannot use the name 'free'. Since all classes ultimately inherit from Object, your script already possesses a native instance method called 'free()' to remove itself from memory.
 static func freeing() -> void :
 	# If C++ is active, we let C++ manage its own memory
 	# If it happens ahead of time, we simply prevent it from breaking the game
@@ -32,6 +30,7 @@ static func freeing() -> void :
 	else : pass
 
 # --- DYNAMIC ROUTER (GAME TIME) ---
+# Function that implements the bypass targeted by this static class
 static func _route_call(method_name: String, args: Array) -> void :
 	if Engine.has_singleton("MyLogger") :
 		var singleton = Engine.get_singleton("MyLogger")

@@ -24,7 +24,7 @@ func _ready() -> void:
 	MyLogger.info(" CharacterController Ready " + name + " ...", 'characters_controller.gd', 36, true)
 	
 	# I emit an event to show what movement it has.
-	var MovementComponent : CharacterMovementComponent = GameInstance._character.get_movementComponent()
+	var MovementComponent : CharacterMovementComponent = get_movementComponent()
 	if MovementComponent.get_movementState() == MovementComponent.RUNING :
 		EventBus.emit(self._ready, EventBus.EVENT.Movement_Changed,["Runing",""])
 	elif MovementComponent.get_movementState() == MovementComponent.WALKING :
@@ -35,10 +35,6 @@ func _ready() -> void:
 	# Emit event to show which camera mode you are using
 	EventBus.emit(self._ready, EventBus.EVENT.CameraMode_Changed, GameInstance._character.get_cameraController().CAMERA_MODE.keys()[GameInstance._character.get_cameraController().cameraMode])
 
-
-func update_skeleton() : super()
-
-func update_animationplayer() : super()
 
 # Inputs resolution, this must be passed to the PlayerController when developed
 func _input(_event) -> void:
@@ -60,12 +56,18 @@ func _positioning_weaponHull() -> void :
 
 # PUBLIC API of this Character Getter and Setters methods
 
-func get_bone() -> BoneAttachment3D : return get_node("Armature/Skeleton3D/Bone")
-func get_weaponHull() -> CollisionShape3D : return get_node("WeaponHull")
+# Getting the character components added to the template
+func get_bone() -> BoneAttachment3D : return get_node("Armature/Skeleton3D/Bone") as BoneAttachment3D
+func get_weaponHull() -> CollisionShape3D : return get_node("WeaponHull") as CollisionShape3D
 func get_cameraController() -> Node3D : return find_child("CameraController") as Node3D
 func get_movementComponent() -> Node : return get_node("CharacterMovementComponent") as Node
 
-# returns the character context, that is the data needed being passed by a character's change
+func get_isArmed() -> bool : return _isArmed
+func set_isArmed(value : bool) :
+	_isArmed = value
+	get_animationTree()._on_character_movement_component_movementStateChanged(get_movementComponent().get_movementState())
+
+# Returns the character context, that is the data needed being passed by a character's change
 func get_context() -> CharactersData :
 	var context = CharactersData.new()
 	context.position = position
@@ -82,14 +84,14 @@ func get_context() -> CharactersData :
 	
 	context.isArmed = _isArmed
 	
-	if _isArmed:
+	if _isArmed :
 		# The only one child component is the weapon
 		# Creating a reference to that and removing the previous reference so that it keeps in memory when the _character is removed
 		context.weapon = get_bone().get_children()[0]
 
 	return context
 
-# setting the character's context
+# Setting the character's context
 func set_context(context : CharactersData) -> void :
 	position = context.position
 	get_armature().rotation = context.armatureRotation
@@ -109,8 +111,3 @@ func set_context(context : CharactersData) -> void :
 		context.weapon.reparent(get_bone(), false)
 		context.weapon.owner = get_bone().get_owner()
 		get_node("WeaponHull").disabled=false
-
-func get_isArmed() -> bool : return _isArmed
-func set_isArmed(value : bool) :
-	_isArmed = value
-	get_animationTree()._on_character_movement_component_movementStateChanged(get_movementComponent().get_movementState())
