@@ -1,12 +1,12 @@
 # Base script for all characters of this demo applied to the AnimationTree
+@tool
 class_name  CharactersAnimationsController extends AnimationTree
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		MyLogger.info("Exiting the animation controller",'animations_controller.gd',6, true)
+		MyLogger.info("Exiting the animation controller",'animations_controller.gd',7, true)
 
-func _ready() -> void :  MyLogger.info(" AnimationController Ready " + name + " ...", 'animations_controller.gd', 8, true)
-
+func _ready() -> void :  MyLogger.info(" AnimationController Ready " + name + " ...", 'animations_controller.gd', 9, true)
 func _enter_tree() -> void : MyLogger.info(" AnimationController instantiated " + name + " ...", 'animations_controller.gd', 10, true)
 
 
@@ -33,10 +33,6 @@ func _on_character_movement_component_directionModeChanged(data: int) -> void :
 			EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed, ["", "Forward"])
 		movementComponent.BACKWARD:
 			EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed, ["", "Backward"])
-
-	# The weapon hull on the character hierarchy must correspond to the weapon's collisionHull
-	# A weakness of Godot is that if you attach an object with a collision hull, it isn't automatically added to the character's collision hull; you have to add it manually.
-	get_parent()._positioning_weaponHull()
 
 # Changing the direction of the movement compoment called by the movement component
 func _on_character_movement_component_movementStateChanged(data: int) -> void :
@@ -84,10 +80,3 @@ func _on_character_movement_component_movementStateChanged(data: int) -> void :
 	if get("parameters/conditions/jump") != is_jumping : 
 		set("parameters/conditions/jump", is_jumping)
 		if is_jumping : EventBus.emit(self._on_character_movement_component_movementStateChanged, EventBus.EVENT.Movement_Changed,["Jumping",""])
-	
-	# Waiting for animation to finish
-	await get_tree().create_timer(0.25).timeout
-
-	# The weapon hull on the character hierarchy must correspond to the weapon's collisionHull
-	# A weakness of Godot is that if you attach an object with a collision hull, it isn't automatically added to the character's collision hull; you have to add it manually.
-	get_parent()._positioning_weaponHull()
